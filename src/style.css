@@ -1,0 +1,49 @@
+/* Reset básico */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #111; /* Fondo oscuro para que resalte lo blanco */
+    overflow: hidden;
+}
+
+/* El contenedor de las flechas */
+#nav-ui {
+    position: fixed; /* Fixed asegura que se quede pegado arriba */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999; /* Un número muy alto para estar SOBRE el 3D */
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    pointer-events: none; /* Permite que el ratón pase a través del div hacia el 3D */
+}
+
+/* Los botones/flechas */
+.nav-arrow {
+    pointer-events: auto; /* IMPORTANTE: Las flechas sí capturan el clic */
+    background: #ffffff; /* Fondo blanco sólido para que no sean transparentes */
+    color: #000000;      /* Texto negro */
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family: sans-serif;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Sombra para dar profundidad */
+    border: 2px solid #555;
+}
+
+.nav-arrow:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+
+.info {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,1); /* Sombra al texto para leerlo sobre el 3D */
+    text-align: center;
+    pointer-events: none;
+}
