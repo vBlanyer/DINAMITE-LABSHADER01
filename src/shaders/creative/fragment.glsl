@@ -1,13 +1,29 @@
 // #version 300 es
-precision highp float;
+precision mediump float;
 
-uniform float u_time;
-uniform vec2 u_resolution;
-out vec4 fragColor;
+uniform vec3 u_lightPosition;
+uniform vec3 u_baseColor;
+uniform float u_steps; // Parámetro 2: Controla cuántos niveles de sombra hay
+
+varying vec3 vNormal;
+varying vec3 vWorldPosition;
 
 void main() {
-  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-  fragColor = vec4(uv.x, uv.y, 0.5 + 0.5 * sin(u_time), 1.0);
+    vec3 normal = normalize(vNormal);
+    vec3 lightDir = normalize(u_lightPosition - vWorldPosition);
+    
+    // Cálculo de intensidad difusa básica
+    float diff = max(dot(normal, lightDir), 0.0);
+    
+    // TOON SHADING: Cuantizamos la intensidad
+    // Esto crea las bandas de color sólidas típicas de los dibujos animados
+    float toonDiff = floor(diff * u_steps) / u_steps;
+    
+    // Un pequeño toque de luz ambiental para que las sombras no sean negras puras
+    vec3 ambient = u_baseColor * 0.2;
+    vec3 finalColor = u_baseColor * toonDiff + ambient;
+
+    gl_FragColor = vec4(finalColor, 1.0);
 }
 // -------------
 // default fragment shader you'll find in TONS of tutorials

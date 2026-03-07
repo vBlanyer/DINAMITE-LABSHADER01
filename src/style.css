@@ -10,40 +10,66 @@ body, html {
 
 /* El contenedor de las flechas */
 #nav-ui {
-    position: fixed; /* Fixed asegura que se quede pegado arriba */
-    top: 0;
+    position: fixed;
+    bottom: 0;      /* Movido al fondo */
     left: 0;
     width: 100%;
-    z-index: 9999; /* Un número muy alto para estar SOBRE el 3D */
+    z-index: 10000; /* Por encima de todo */
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    align-items: flex-end; /* Alinea los botones al suelo */
+    padding: 30px;
     box-sizing: border-box;
-    pointer-events: none; /* Permite que el ratón pase a través del div hacia el 3D */
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); /* Gradiente sutil para legibilidad */
 }
 
 /* Los botones/flechas */
 .nav-arrow {
-    pointer-events: auto; /* IMPORTANTE: Las flechas sí capturan el clic */
-    background: #ffffff; /* Fondo blanco sólido para que no sean transparentes */
-    color: #000000;      /* Texto negro */
-    padding: 12px 24px;
-    border-radius: 8px;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px); /* Efecto cristal moderno */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px 25px;
     text-decoration: none;
-    font-weight: bold;
-    font-family: sans-serif;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Sombra para dar profundidad */
-    border: 2px solid #555;
+    border-radius: 12px;
+    font-weight: 600;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .nav-arrow:hover {
-    background: #e0e0e0;
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-5px); /* Pequeño salto al pasar el mouse */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 .info {
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,1); /* Sombra al texto para leerlo sobre el 3D */
     text-align: center;
+    color: white;
+    margin-bottom: 10px;
     pointer-events: none;
+}
+
+.info h1 {
+    font-size: 1.4rem;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.info p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin: 5px 0 0;
+}
+
+/* Ajuste para lil-gui para que no choque con nada */
+.lil-gui.root {
+    top: 20px !important;
+    right: 20px !important; /* Lo movemos a la DERECHA superior */
+    left: auto !important;
 }

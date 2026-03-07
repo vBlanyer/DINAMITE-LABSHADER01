@@ -1,19 +1,23 @@
-// #version 300 es
-precision highp float;
+
+precision mediump float;
 
 in vec3 position;
+in vec3 normal;
 
-uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+out vec3 vNormal;
+out vec3 vWorldPosition;
 
 void main() {
-  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+    // Calculamos la posición en el mundo para la dirección de la luz
+    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+    vWorldPosition = worldPos.xyz;
+    
+    // Transformamos la normal al espacio del mundo (sin escalas no uniformes)
+    vNormal = mat3(modelMatrix) * normal;
+    
+    gl_Position = projectionMatrix * viewMatrix * worldPos;
 }
-// -------------
-// default vertex shader you'll find in TONS of tutorials
-// no need to declare position as it is declared by default
-// modelViewMatrix is the shorthand for (model * view) operation
-// void main() {
-//   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-// }
