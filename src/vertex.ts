@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import VertexManipulatorMaterial from './shaders/main/material';
+import VertexManipulatorMaterial from './shaders/vertex/material';
 
 class App {
   private scene: THREE.Scene;
@@ -36,7 +36,6 @@ class App {
     }
     this.renderer.setClearColor(new THREE.Color('#1b1e2b'), 1);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     document.body.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);

@@ -28,7 +28,15 @@ class CreativeApp {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 0, 3);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
+
+    if (!this.renderer.capabilities.isWebGL2) {
+      console.warn('WebGL 2.0 is not available on this browser.');
+    }
+
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
@@ -48,9 +56,9 @@ class CreativeApp {
         u_steps: { value: this.params.steps },
         u_baseColor: { value: new THREE.Color(this.params.color) },
         u_lightPosition: { value: new THREE.Vector3(5, 5, 5) },
+        projectionMatrix: { value: this.camera.projectionMatrix },
+        viewMatrix: { value: this.camera.matrixWorldInverse },
         modelMatrix: { value: new THREE.Matrix4() },
-        viewMatrix: { value: new THREE.Matrix4() },
-        projectionMatrix: { value: new THREE.Matrix4() },
       }
     });
 
@@ -87,8 +95,7 @@ class CreativeApp {
     this.controls.update();
 
     this.material.uniforms.u_time.value = elapsedTime;
-    this.material.uniforms.viewMatrix.value.copy(this.camera.matrixWorldInverse);
-    this.material.uniforms.projectionMatrix.value.copy(this.camera.projectionMatrix);
+    
 
     this.renderer.render(this.scene, this.camera);
   }

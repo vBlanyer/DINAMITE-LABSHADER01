@@ -1,5 +1,5 @@
 
-precision mediump float;
+precision highp float;
 
 uniform vec3 u_lightColor;
 uniform vec3 u_materialColor;
