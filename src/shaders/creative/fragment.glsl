@@ -1,12 +1,14 @@
-// #version 300 es
-precision mediump float;
+
+precision highp float;
 
 uniform vec3 u_lightPosition;
 uniform vec3 u_baseColor;
 uniform float u_steps; // Parámetro 2: Controla cuántos niveles de sombra hay
 
-varying vec3 vNormal;
-varying vec3 vWorldPosition;
+in vec3 vNormal;
+in vec3 vWorldPosition;
+
+out vec4 fragColor;
 
 void main() {
     vec3 normal = normalize(vNormal);
@@ -23,7 +25,7 @@ void main() {
     vec3 ambient = u_baseColor * 0.2;
     vec3 finalColor = u_baseColor * toonDiff + ambient;
 
-    gl_FragColor = vec4(finalColor, 1.0);
+    fragColor = vec4(finalColor, 1.0);
 }
 // -------------
 // default fragment shader you'll find in TONS of tutorials

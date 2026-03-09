@@ -1,7 +1,7 @@
-precision mediump float;
+precision highp float;
 
-attribute vec3 position;
-attribute vec3 normal;
+in vec3 position;
+in vec3 normal;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
@@ -10,8 +10,8 @@ uniform mat4 projectionMatrix;
 uniform float u_time;
 uniform float u_inflation; // Parámetro 1: Controla qué tanto se infla
 
-varying vec3 vNormal;
-varying vec3 vWorldPosition;
+out vec3 vNormal;
+out vec3 vWorldPosition;
 
 void main() {
     // Efecto de inflado: movemos el vértice en la dirección de su normal

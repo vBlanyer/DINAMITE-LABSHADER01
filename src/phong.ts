@@ -112,22 +112,22 @@ class PhongApp {
   }
 
   private animate(): void {
-  requestAnimationFrame(this.animate);
-  
-  const elapsedTime = (Date.now() - this.startTime) / 1000;
-  this.material.uniforms.u_time.value = elapsedTime;
+    requestAnimationFrame(this.animate);
+    
+    const elapsedTime = (Date.now() - this.startTime) / 1000;
+    this.material.uniforms.u_time.value = elapsedTime;
 
-  // 1. IMPORTANTE: Actualizar la posición de la cámara para el brillo especular
-  this.material.uniforms.u_viewPosition.value.copy(this.camera.position);
+    // 1. IMPORTANTE: Actualizar la posición de la cámara para el brillo especular
+    this.material.uniforms.u_viewPosition.value.copy(this.camera.position);
 
-  // 2. ACTUALIZAR MATRICES: Como usas RawShaderMaterial, 
-  // Three.js no siempre actualiza las matrices automáticamente en los uniforms.
-  this.material.uniforms.viewMatrix.value.copy(this.camera.matrixWorldInverse);
+    // 2. ACTUALIZAR MATRICES: Como usas RawShaderMaterial, 
+    // Three.js no siempre actualiza las matrices automáticamente en los uniforms.
+    this.material.uniforms.viewMatrix.value.copy(this.camera.matrixWorldInverse);
 
-  // 3. Actualizar controles para que el damping funcione suave
-  this.controls.update();
+    // 3. Actualizar controles para que el damping funcione suave
+    this.controls.update();
 
-  this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
 }
 
   private onWindowResize(): void {

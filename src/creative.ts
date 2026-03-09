@@ -9,10 +9,19 @@ class CreativeApp {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
+  private geometry: THREE.TorusKnotGeometry;
+  private material: THREE.RawShaderMaterial;
+  private mesh: THREE.Mesh;
+  private startTime: number;
   private controls: OrbitControls;
   private gui: GUI;
-  private material: THREE.RawShaderMaterial;
-  private clock: THREE.Clock;
+  
+  private camConfig = {
+    fov: 75,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 0.1,
+    far: 1000,
+  };
 
   private params = {
     inflation: 0.2, // Parámetro Vertex
@@ -23,10 +32,15 @@ class CreativeApp {
   constructor() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#050505');
-    this.clock = new THREE.Clock();
+    
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(0, 0, 3);
+    this.camera = new THREE.PerspectiveCamera(
+      this.camConfig.fov,
+      this.camConfig.aspect,
+      this.camConfig.near,
+      this.camConfig.far,
+    );
+    this.camera.position.z = 2.0;
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -40,35 +54,54 @@ class CreativeApp {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
+    const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
+
     // OrbitControls: Permite acercarse/alejarse con el ratón (Requisito)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
 
     // Usamos un Toroide (Dona) porque se ve genial con Toon Shading
-    const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 128, 32);
+    this.geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 128, 32);
 
     this.material = new THREE.RawShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
+        projectionMatrix: { value: this.camera.projectionMatrix },
+        viewMatrix: { value: this.camera.matrixWorldInverse },
+        modelMatrix: { value: new THREE.Matrix4() },
+        //Custom Uniforms
         u_time: { value: 0.0 },
+        u_resolution: { value: resolution },
+        //Uniforms Creativo
         u_inflation: { value: this.params.inflation },
         u_steps: { value: this.params.steps },
         u_baseColor: { value: new THREE.Color(this.params.color) },
         u_lightPosition: { value: new THREE.Vector3(5, 5, 5) },
-        projectionMatrix: { value: this.camera.projectionMatrix },
-        viewMatrix: { value: this.camera.matrixWorldInverse },
-        modelMatrix: { value: new THREE.Matrix4() },
-      }
+      },
+      glslVersion: THREE.GLSL3,
     });
 
-    const mesh = new THREE.Mesh(geometry, this.material);
-    this.scene.add(mesh);
+    // Create mesh
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+  this.scene.add(this.mesh);
 
+    //GUI
     this.gui = new GUI({ title: 'Material Creativo: Toon Pulse' });
     this.setupUI();
 
-    window.addEventListener('resize', () => this.onWindowResize());
+    // Initialize
+    this.startTime = Date.now();
+    this.onWindowResize();
+
+    //Bind methods
+    this.onWindowResize = this.onWindowResize.bind(this);
+    this.animate = this.animate.bind(this);
+
+    //Add event listeners
+    window.addEventListener("resize", this.onWindowResize);
+
+    //animate
     this.animate();
   }
 
@@ -88,14 +121,15 @@ class CreativeApp {
     });
   }
 
-  private animate() {
-    requestAnimationFrame(() => this.animate());
-    const elapsedTime = this.clock.getElapsedTime();
+  private animate(): void {
+    requestAnimationFrame(this.animate);
+
+    const elapsedTime = (Date.now() - this.startTime) / 1000;
 
     this.controls.update();
 
     this.material.uniforms.u_time.value = elapsedTime;
-    
+    this.material.uniforms.viewMatrix.value.copy(this.camera.matrixWorldInverse);
 
     this.renderer.render(this.scene, this.camera);
   }
